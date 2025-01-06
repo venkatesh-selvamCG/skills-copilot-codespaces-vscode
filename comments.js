@@ -30,4 +30,4 @@ var server = http.createServer(function(req, res) {
     }
 });
 server.listen(8080);
-console.log('Server is running at http://
+console.log('Server is running at http://');
