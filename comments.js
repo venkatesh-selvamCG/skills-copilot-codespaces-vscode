@@ -1,26 +1,34 @@
 // create web server
-// create comments
-// read comments
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var comments = require('./comments.json');
 
-// create web server
-const express = require('express');
-const app = express();
-const port = 3000;
+// add middleware
+app.use(bodyParser.json());
 
-// create comments
-const comments = [
-    { name: 'John', comment: 'Hello World!' },
-    { name: 'Mary', comment: 'Hello Universe!' }
-];
+// serve static files
+app.use(express.static('public'));
 
-// read comments
-app.get('/comments', (req, res) => {
+// get comments
+app.get('/comments', function(req, res) {
+  res.json(comments);
+});
+
+// post comments
+app.post('/comments', function(req, res) {
+  comments.push(req.body);
+  fs.writeFile('comments.json', JSON.stringify(comments, null, 4), function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+    }
     res.json(comments);
+  });
 });
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+// start server
+app.listen(3000, function() {
+  console.log('Server started on http://localhost:3000');
 });
-
-// test with curl
-// curl http://localhost:3000/comments
